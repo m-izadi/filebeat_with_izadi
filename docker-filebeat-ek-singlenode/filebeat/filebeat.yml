@@ -33,6 +33,7 @@ filebeat.config:
   modules:
     path: /usr/share/filebeat/modules.d/*.yml
     tags: ["fortinet"]
+    reload.enabled: true
 
 # filebeat.config:
 #   modules:

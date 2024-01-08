@@ -1,8 +1,8 @@
-version: "3"
+version: "2.2"
 
 services:
   es01:
-    image: repo-nexus.kavosh.org:8080/elasticsearch:8.11.1
+    image: repo-nexus.kavosh.org:8080/elasticsearch:8.7.1
     container_name: es01
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
@@ -40,7 +40,7 @@ services:
     #   retries: 120
 
   kibana:
-    image: repo-nexus.kavosh.org:8080/kibana:8.11.1
+    image: repo-nexus.kavosh.org:8080/kibana:8.7.1
     container_name: kibana
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
@@ -72,11 +72,11 @@ services:
       - elastic
 
   filebeat:
-    # build:
-      # context: filebeat
-      # dockerfile: .
-    #   dockerfile: filebeat-Dockerfile
-    image: repo-nexus.kavosh.org:8080/elastic/filebeat:8.11.1
+    build:
+      context: filebeat
+      dockerfile: Dockerfile
+      # dockerfile: filebeat-Dockerfile
+    # image: filebeat-custom:v1
     container_name: filebeat
     user: root
     volumes:
@@ -86,7 +86,7 @@ services:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
 # FileBeat Config
       - /data/filebeat/data:/usr/share/filebeat/data
-      - /data/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      # - /data/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - /data/filebeat/ingest_data/:/usr/share/filebeat/ingest_data/
 # Modules
       # - /data/filebeat/modules.d:/usr/share/filebeat/modules.d:ro     # FortiNet
