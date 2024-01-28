@@ -1,0 +1,15 @@
+FROM repo-nexus.kavosh.org/elastic/filebeat:8.12.0
+COPY filebeat.yml /usr/share/filebeat/filebeat.yml
+COPY fortinet.yml /usr/share/filebeat/modules.d/fortinet.yml
+
+USER root
+
+RUN chmod go-w /usr/share/filebeat/filebeat.yml && \
+    chmod go-w /usr/share/filebeat/modules.d/fortinet.yml && \
+    echo "filebeat modules enable nginx" >> /usr/share/filebeat/enable_modules.sh && \
+    echo "filebeat modules enable fortinet" >> /usr/share/filebeat/enable_modules.sh && \
+    # echo "filebeat setup" >> /usr/share/filebeat/enable_modules.sh && \
+    chmod +x /usr/share/filebeat/enable_modules.sh && \
+    bash /usr/share/filebeat/enable_modules.sh
+
+USER filebeat
