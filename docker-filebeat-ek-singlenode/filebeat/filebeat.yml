@@ -62,7 +62,7 @@ output.elasticsearch:
   hosts: ${ELASTIC_HOSTS}
   username: ${ELASTIC_USER}
   password: ${ELASTIC_PASSWORD}
-  ssl.enabled: true
+  # ssl.enabled: true
 
   indices:
   - index: "access-log"

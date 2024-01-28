@@ -28,7 +28,11 @@ filebeat modules list
 
     Set Permision
       sudo setfacl -Rm u:ubuntu:rwx /data/elastic/
+      sudo setfacl -Rm u:manage:rwx /data/
 
+# Network
+
+    docker network create --scope=swarm --attachable -d overlay elastic
 
 echo -e "deb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal main restricted\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal-updates main restricted\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal universe\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal-updates universe\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal multiverse\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal-updates multiverse\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal-backports main restricted universe multiverse\ndeb http://repo-nexus.kavosh.org:8081/repository/focal-security/ ubuntu-security main restricted\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu-security/ focal-security universe\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu-security/ focal-security multiverse" > /etc/apt/sources.list
 
@@ -37,6 +41,13 @@ echo -e "deb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal main res
 
     curl -XGET -k -u *:* localhost:9200
 
+# Node Permision
+
+    sudo setfacl -Rm u:manage:rwx /data/elastic/
+    sudo setfacl -Rm u:manage:rwx /data/kibana/
+
 # Commands
 
-    docker rm -f filebeat && docker rmi filebeat-filebeat:latest -f && DOCKER_BUILDKIT=0 docker compose -f docker-compose.yml up -d filebeat
+    docker rm -f filebeat && DOCKER_BUILDKIT=0 docker compose -f docker-compose.yml up -d filebeat
+
+    docker system prune && docker rmi filebeat-filebeat:latest -f && sudo rm -rf /data/* && docker rm -f filebeat kibana es01 && DOCKER_BUILDKIT=0 docker compose -f docker-compose.yml up -d && docker logs -f filebeat
