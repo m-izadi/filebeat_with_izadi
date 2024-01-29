@@ -1,0 +1,49 @@
+FROM repo-nexus.kavosh.org/elastic/filebeat:8.12.0
+USER root
+# Set Local Repo
+
+SHELL ["/bin/bash", "-c"]
+RUN echo "deb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal main restricted\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal-updates main restricted\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal universe\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal-updates universe\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal multiverse\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal-updates multiverse\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal-backports main restricted universe multiverse\ndeb http://repo-nexus.kavosh.org:8081/repository/focal-security/ ubuntu-security main restricted\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu-security/ focal-security universe\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu-security/ focal-security multiverse" > /etc/apt/sources.list
+
+################################################ Proxy
+# RUN export http_proxy=http://proxy.kavosh.org:808 && \
+#     export https_proxy=http://proxy.kavosh.org:808 && \
+#     export HTTPS_PROXY=http://proxy.kavosh.org:808 && \
+#     export HTTP_PROXY=http://proxy.kavosh.org:808
+# RUN echo 'Acquire::http::Proxy "http://proxy.kavosh.org:808/";' > /etc/apt/apt.conf.d/proxy.conf
+# RUN unset HTTP_PROXY && \
+#     unset HTTPS_PROXY && \
+#     unset http_proxy && \
+#     unset https_proxy
+################################################
+
+RUN \
+    apt update 2>/dev/null && \
+    apt install -y cron vim 2>/dev/null && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy Fortinet module configuration
+
+# Switch to root for setup
+
+# Copy Filebeat configuration
+# COPY --chown=root:root filebeat.yml /usr/share/filebeat/filebeat.yml
+COPY filebeat.yml /usr/share/filebeat/filebeat.yml
+RUN chmod go-w /usr/share/filebeat/filebeat.yml
+
+# COPY --chown=root:root fortinet.yml /usr/share/filebeat/modules.d/fortinet.yml
+COPY fortinet.yml /usr/share/filebeat/modules.d/fortinet.yml
+RUN chmod go-w /usr/share/filebeat/modules.d/fortinet.yml
+
+RUN \
+    echo "filebeat modules enable nginx" >> /usr/share/filebeat/enable_modules.sh && \
+    echo "filebeat modules enable fortinet" >> /usr/share/filebeat/enable_modules.sh && \
+    chmod +x /usr/share/filebeat/enable_modules.sh
+
+RUN echo "@reboot ./usr/share/filebeat/enable_modules.sh" >> /etc/cron.d/enable_modules
+# RUN crontab <<EOF @reboot ./usr/share/filebeat/enable_modules.sh EOF
+# RUN ./filebeat modules enable gcp
+
+# Switch back to filebeat user for runtime
+USER filebeat

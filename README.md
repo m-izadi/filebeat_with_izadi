@@ -15,15 +15,28 @@
         ./filebeat test config -e
         Config OK
 filebeat modules list
+
     Hint: https://mpolinowski.github.io/docs/DevOps/Elasticsearch/2022-02-03--elasticsearch-v8-data-ingestion/2022-02-03/
 
 ## Enable moudles
 
     # filebeat modules list
-    # filebrat modules enable fortinet
+    # filebeat modules enable fortinet
     # vim /usr/share/filebeat/modules.d/fortinet.yml
-        enabled: true
+        
+        - module: fortinet
+          firewall:
+            enabled: true
 
+            # Set which input to use between tcp, udp (default) or file.
+            var.input: udp
+
+            # The interface to listen to syslog traffic. Defaults to
+            # localhost. Set to 0.0.0.0 to bind to all available interfaces.
+            var.syslog_host: 0.0.0.0
+
+            # The port to listen for syslog traffic. Defaults to 9004.
+            var.syslog_port: 9004
 # Elastic
 
     Set Permision
@@ -33,9 +46,6 @@ filebeat modules list
 # Network
 
     docker network create --scope=swarm --attachable -d overlay elastic
-
-echo -e "deb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal main restricted\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal-updates main restricted\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal universe\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal-updates universe\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal multiverse\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal-updates multiverse\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal-backports main restricted universe multiverse\ndeb http://repo-nexus.kavosh.org:8081/repository/focal-security/ ubuntu-security main restricted\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu-security/ focal-security universe\ndeb http://repo-nexus.kavosh.org:8081/repository/ubuntu-security/ focal-security multiverse" > /etc/apt/sources.list
-
 
 # Test Elastic
 
@@ -51,3 +61,8 @@ echo -e "deb http://repo-nexus.kavosh.org:8081/repository/ubuntu/ focal main res
     docker rm -f filebeat && DOCKER_BUILDKIT=0 docker compose -f docker-compose.yml up -d filebeat
 
     docker system prune && docker rmi filebeat-filebeat:latest -f && sudo rm -rf /data/* && docker rm -f filebeat kibana es01 && DOCKER_BUILDKIT=0 docker compose -f docker-compose.yml up -d && docker logs -f filebeat
+
+# Fortigate Commands
+
+    config log syslogd setting
+    show

@@ -99,6 +99,7 @@ services:
     ports:
       - 514:514
       - 514:514/udp
+      - 9004:9004/udp
     environment:
       - ELASTIC_USER=${ELASTIC_USER}
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
@@ -113,7 +114,6 @@ services:
     networks:
       - elastic
     # command: /bin/bash -c "filebeat modules enable fortinet && filebeat setup && service filebeat start"
-
 
 networks:
   elastic:

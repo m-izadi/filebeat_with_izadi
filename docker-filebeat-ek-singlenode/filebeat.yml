@@ -31,7 +31,7 @@ filebeat.inputs:
 
 filebeat.config:
   modules:
-    path: /usr/share/filebeat/modules.d/*.yml
+    path: /usr/share/filebeat/modules.d/fortinet.yml
     tags: ["fortinet"]
     reload.enabled: true
 
