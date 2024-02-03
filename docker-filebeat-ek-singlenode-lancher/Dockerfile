@@ -18,17 +18,18 @@ COPY filebeat.yml /usr/share/filebeat/filebeat.yml
 RUN chmod go-w /usr/share/filebeat/filebeat.yml
 
 # Enable Fortinet module
-RUN ./filebeat modules enable fortinet
+# RUN ./filebeat modules enable fortinet
 # RUN ./filebeat modules enable gcp
 
 # Copy Fortinet module configuration
-COPY --chown=root:root fortinet.yml /usr/share/filebeat/modules.d/fortinet.yml
+# COPY --chown=root:root fortinet.yml /usr/share/filebeat/modules.d/fortinet.yml
 
 # Set permissions on Fortinet module configuration
-RUN chmod go-w /usr/share/filebeat/modules.d/fortinet.yml
+# RUN chmod go-w /usr/share/filebeat/modules.d/fortinet.yml
 
 # Run Filebeat setup
-# CMD ["filebeat", "-e", "setup", "&&", "service", "filebeat", "start"]
+#CMD filebeat setup
+# CMD ["filebeat", "-e", "setup"]
 
 # Switch back to filebeat user for runtime
 USER filebeat

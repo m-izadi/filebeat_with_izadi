@@ -62,6 +62,7 @@ filebeat modules list
 
     docker system prune && docker rmi filebeat-filebeat:latest -f && sudo rm -rf /data/* && docker rm -f filebeat kibana es01 && DOCKER_BUILDKIT=0 docker compose -f docker-compose.yml up -d && docker logs -f filebeat
 
+    docker rm -f filebeat && docker system prune && docker rmi filebeat-filebeat:latest -f && DOCKER_BUILDKIT=0 docker compose -f docker-compose.yml up -d filebeat && docker logs -f filebeat
 # Fortigate Commands
 
     config log syslogd setting
