@@ -2,7 +2,7 @@ version: "3"
 
 services:
   es01:
-    image: repo-nexus.kavosh.org/elasticsearch:8.12.0
+    image: repo-nexus.kavosh.org/elasticsearch:8.12.1
     container_name: es01
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
@@ -40,7 +40,7 @@ services:
     #   retries: 120
 
   kibana:
-    image: repo-nexus.kavosh.org/kibana:8.12.0
+    image: repo-nexus.kavosh.org/kibana:8.12.1
     container_name: kibana
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
