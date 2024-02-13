@@ -1,15 +1,53 @@
 filebeat.inputs:
-- type: filestream
-  enabled: true
-  paths:
-    - /var/log/nginx/access.log
-  tags: ["accesslog"]
-- type: filestream
-  enabled: true
-  paths:
-    - /var/log/nginx/error.log
-  tags: ["errorlog"]
+# ============================== Filebeat inputs(PFSense) ===============================
 
+- type: udp
+  max_message_size: 10MiB
+  host: "0.0.0.0:5140"
+  enabled: true
+
+  fields:
+     type: pfsense
+  fields_under_root: true
+  encoding: utf-8
+  ignore_older: 12h
+  tags: ["PFSense"]
+
+# ============================== Filebeat Module(Fortinet) ===============================
+filebeat.config:
+  modules:
+    path: /usr/share/filebeat/modules.d/*.yml
+    tags: ["fortinet"]
+      #    reload.enabled: true
+
+# ============================== Filebeat Modules ===============================
+# filebeat.config:
+#   modules:
+#     path: ${path.config}/modules.d/*.yml # enable all modules (nginx, kafka, redis, etc)
+#     reload.enabled: false
+
+# ============================== Filebeat filestream(Nginx) ===============================
+# - type: filestream
+#   enabled: true
+#   paths:
+#     - /var/log/nginx/access.log
+#   tags: ["accesslog"]
+# - type: filestream
+#   enabled: true
+#   paths:
+#     - /var/log/nginx/error.log
+#   tags: ["errorlog"]
+
+# ============================== Filebeat Modules(Nginx) ===============================
+# filebeat.modules:
+# - module: nginx
+#   access:
+#     var.paths: ["/var/log/nginx/access.log*"]
+#   error:
+#     var.paths: ["/var/log/nginx/error.log*"]
+
+
+# ============================== Filebeat filestream ===============================
 # - type: filestream
 #   enabled: true
 #   paths:
@@ -20,6 +58,7 @@ filebeat.inputs:
 #   path: ${path.config}/modules.d/*.yml
 #   reload.enabled: false
 
+# ============================== Filebeat AutoDiscover(Docker) ===============================
 
     #filebeat.autodiscover:
     # proveiders:
@@ -29,59 +68,44 @@ filebeat.inputs:
 
 
 
-filebeat.config:
-  modules:
-    path: /usr/share/filebeat/modules.d/*.yml
-    tags: ["fortinet"]
-      #    reload.enabled: true
-
-# filebeat.config:
-#   modules:
-#     path: ${path.config}/modules.d/*.yml # enable all modules (nginx, kafka, redis, etc)
-#     reload.enabled: false
-
-
-# filebeat.modules:
-# - module: nginx
-#   access:
-#     var.paths: ["/var/log/nginx/access.log*"]
-#   error:
-#     var.paths: ["/var/log/nginx/error.log*"]
-
-
-
 setup.ilm.enabled: true
 ####### OutPut
+# ============================== Filebeat Kibana ===============================
 setup.kibana:
  host: ${KIBANA_HOSTS}
  username: ${ELASTIC_USER}
  password: ${ELASTIC_PASSWORD}
  dashboards.enable: true
 
+# ============================== Filebeat Elastic ===============================
 output.elasticsearch:
   hosts: ${ELASTIC_HOSTS}
   username: ${ELASTIC_USER}
   password: ${ELASTIC_PASSWORD}
   ssl.enabled: true
 
+# ============================== Filebeat Indices ===============================
   indices:
-  - index: "access-log"
-    when.contains:
-      tags: "accesslog"
-  - index: "error-log"
-    when.contains:
-      tags: "errorlog"
-  - index: "containers"
-    when.contains:
-      tags: "containers"
   - index: "fortinet"
     when.contains:
       tags: "fortinet"
+  - index: "PFSense"
+    when.contains:
+      tags: "PFSense"
+  # - index: "access-log"
+  #   when.contains:
+  #     tags: "accesslog"
+  # - index: "error-log"
+  #   when.contains:
+  #     tags: "errorlog"
+  # - index: "containers"
+  #   when.contains:
+  #     tags: "containers"
   # - index: "cloud-init-%{+yyyy.MM.dd}"
   #   when.containes:
   #     tags: "cloud-init"
 
-
+# ============================== Filebeat LogStash ===============================
 # output.logstash:
 #   hosts: ["logstash.kavosh.org:15044"]
 
