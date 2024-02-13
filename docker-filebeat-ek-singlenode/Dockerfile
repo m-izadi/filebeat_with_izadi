@@ -27,7 +27,6 @@ COPY --chown=root:root fortinet.yml /usr/share/filebeat/modules.d/fortinet.yml
 # Set permissions on Fortinet module configuration
 RUN chmod go-w /usr/share/filebeat/modules.d/fortinet.yml
 
-# Run Filebeat setup
 # CMD ["filebeat", "-e", "setup", "&&", "service", "filebeat", "start"]
 
 # Switch back to filebeat user for runtime

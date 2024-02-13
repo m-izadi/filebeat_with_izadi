@@ -31,9 +31,9 @@ filebeat.inputs:
 
 filebeat.config:
   modules:
-    path: /usr/share/filebeat/modules.d/fortinet.yml
+    path: /usr/share/filebeat/modules.d/*.yml
     tags: ["fortinet"]
-    reload.enabled: true
+      #    reload.enabled: true
 
 # filebeat.config:
 #   modules:
@@ -62,7 +62,7 @@ output.elasticsearch:
   hosts: ${ELASTIC_HOSTS}
   username: ${ELASTIC_USER}
   password: ${ELASTIC_PASSWORD}
-  # ssl.enabled: true
+  ssl.enabled: true
 
   indices:
   - index: "access-log"
@@ -84,3 +84,4 @@ output.elasticsearch:
 
 # output.logstash:
 #   hosts: ["logstash.kavosh.org:15044"]
+
