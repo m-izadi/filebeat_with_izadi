@@ -99,7 +99,10 @@ services:
     ports:
       - 514:514
       - 514:514/udp
-      - 9004:9004/udp
+      - 5140:5140/udp #PFSense
+      - 5141:5141/udp
+      - 5142:5142/udp
+      - 9004:9004/udp #Fortinet
     environment:
       - ELASTIC_USER=${ELASTIC_USER}
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
