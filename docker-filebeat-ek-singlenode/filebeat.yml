@@ -69,6 +69,11 @@ filebeat.config:
 
 
 setup.ilm.enabled: true
+
+###### Primar
+setup.template.settings:
+  index.number_of_shards: 1
+  index.number_of_replicas: 0
 ####### OutPut
 # ============================== Filebeat Kibana ===============================
 setup.kibana:
