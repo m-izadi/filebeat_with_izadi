@@ -1,4 +1,4 @@
-FROM repo-nexus.kavosh.org/elastic/filebeat:8.12.1
+FROM repo-nexus.kavosh.org/elastic/filebeat:8.12.2
 # Switch to root for setup
 USER root
 SHELL ["/bin/bash", "-c"]

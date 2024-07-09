@@ -1,0 +1,55 @@
+version: "3"
+services:
+  filebeat:
+    build:
+      # context: filebeat
+      # dockerfile: .
+      dockerfile: Dockerfile
+    # image: repo-nexus.kavosh.org/elastic/filebeat:8.12.0
+    container_name: filebeat
+    user: root
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+# DOCKER
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+# FileBeat Config
+      - /data/filebeat/data:/usr/share/filebeat/data
+      # - /data/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /data/filebeat/ingest_data/:/usr/share/filebeat/ingest_data/
+# Modules
+      # - /data/filebeat/modules.d:/usr/share/filebeat/modules.d:ro     # FortiNet
+      # - /data/filebeat/modules.d/fortinet.yml:/usr/share/filebeat/modules.d/fortinet.yml:ro     # FortiNet
+# Static Files
+      # - /srv/docker-composes/nginx/logs/nginx:/var/log/nginx:ro   # NGINX
+# Certs
+      - /data/filebeat/certs:/usr/share/filebeat/certs
+      - /data/filebeat/certs:/usr/share/elasticsearch/config/certs
+
+    ports:
+      - 514:514
+      - 514:514/udp
+      - 5140:5140/udp #PFSense
+      - 5141:5141/udp
+      - 5142:5142/udp
+      - 9004:9004/udp #Fortinet
+    environment:
+      - ELASTIC_USER=${ELASTIC_USER}
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - ELASTIC_HOSTS=https://10.250.0.118:9200
+      - KIBANA_HOSTS=http://10.250.0.118:5601
+      # - LOGSTASH_HOSTS=http://logstash01:9600
+    # healthcheck:
+    #    test: curl -s http://filebeat >/dev/null || exit 1
+    #    interval: 30s
+    #    timeout: 10s
+    #    retries: 50
+    networks:
+      - elastic
+    # command: /bin/bash -c "filebeat modules enable fortinet && filebeat setup && service filebeat start"
+
+
+networks:
+  elastic:
+    external: true
+    name: elastic

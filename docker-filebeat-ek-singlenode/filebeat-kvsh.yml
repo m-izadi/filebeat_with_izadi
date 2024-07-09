@@ -16,8 +16,7 @@ filebeat.inputs:
 # ============================== Filebeat Module(Fortinet) ===============================
 filebeat.config:
   modules:
-    # path: /usr/share/filebeat/modules.d/*.yml
-    path: /etc/filebeat/modules.d/*.yml
+    path: /usr/share/filebeat/modules.d/fortinet.yml
     tags: ["fortinet"]
       #    reload.enabled: true
 
@@ -78,16 +77,16 @@ setup.template.settings:
 ####### OutPut
 # ============================== Filebeat Kibana ===============================
 setup.kibana:
- host: ${KIBANA_HOSTS}
- username: ${ELASTIC_USER}
- password: ${ELASTIC_PASSWORD}
+ host: http://10.250.0.118:5601/
+ username: izadi
+ password: izadi123
  dashboards.enable: true
 
 # ============================== Filebeat Elastic ===============================
 output.elasticsearch:
-  hosts: ${ELASTIC_HOSTS}
-  username: ${ELASTIC_USER}
-  password: ${ELASTIC_PASSWORD}
+  hosts: https://10.250.0.118:9200
+  username: izadi
+  password: izadi123
   ssl.enabled: true
 
 # ============================== Filebeat Indices ===============================
